@@ -1,8 +1,22 @@
 import {React, useState} from 'react'
 import { LuMoon, LuSun } from "react-icons/lu";
+import client from "../mqttClient.js"
 
 const LightSensorSlider = () => {
     const [value, setValue] = useState(50);
+
+    const handleSliderChange = (e) => {
+      const newValue = e.target.value;
+      setValue(newValue);
+
+      if (client.connected) {
+        client.publish(
+          "config/threshold",
+          newValue.toString(),
+          {qos: 1, retain: true}
+        );
+      }
+    }
   return (
     <div className="w-full max-w-2xl mx-auto rounded-xl bg-slate-900 border border-slate-800 p-6 shadow-xl flex flex-col gap-6">
         {/* Header Section */}
@@ -17,7 +31,7 @@ const LightSensorSlider = () => {
       </div>
       {/* Slider Section */}
       <div className="flex flex-col items-center gap-2">
-        <input type='range' min={0} max={100} value={value} onChange={(e) =>  setValue(e.target.value)} className='w-full cursor-pointer'/>
+        <input type='range' min={0} max={100} value={value} onChange={handleSliderChange} className='w-full cursor-pointer'/>
         <div className='flex justify-between w-full text-slate-400'>
         <LuMoon size={20} />
         <LuSun size={20} />

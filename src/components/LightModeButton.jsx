@@ -4,9 +4,24 @@ import {
   HiOutlineSun, 
   HiOutlineBan 
 } from 'react-icons/hi';
+import client from '../mqttClient.js'
 
 const LightModeButton = () => {
   const [activeMode, setActiveMode] = useState('AUTO');
+
+  const handleModeChange = (newModeId) => {
+    setActiveMode(newModeId);
+
+    if (client && client.connected) {
+      client.publish(
+        "config/mode",
+        newModeId,
+        { qos: 1, retain: true }
+      );
+    } else {
+      console.warn("MQTT Client not connected")
+    }
+  }
 
   const modes = [
     { 
@@ -44,7 +59,7 @@ const LightModeButton = () => {
           return (
             <button
               key={mode.id}
-              onClick={() => setActiveMode(mode.id)}
+              onClick={() => handleModeChange(mode.id)}
               className={`
                 group relative flex items-center justify-center gap-3 py-4 px-4 rounded-xl 
                 text-sm font-bold transition-all duration-200 ease-in-out border cursor-pointer
