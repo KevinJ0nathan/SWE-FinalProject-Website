@@ -1,10 +1,29 @@
 import React from 'react'
+import { HiOutlineVideoCameraSlash } from "react-icons/hi2";
 
 const CameraFeed = ({isConnected}) => {
   return (
-    <div className='relative'>
+    <div className='relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-slate-800 group'>
         {/* Video feed */}
-        <img src='https://placehold.co/1920x1080' className='rounded-xl w-full object-cover'/>
+        {isConnected ? (
+            /* STATE A: Connected */
+            <img 
+                src='https://placehold.co/1920x1080' 
+                alt="Live Feed"
+                className='w-full h-full object-cover'
+            />
+        ) : (
+            /* STATE B: Disconnected */
+            <div className='flex w-full h-full flex-col items-center justify-center w-full h-full bg-slate-900'>
+                {/* Red pulsing effect */}
+                <div className='relative mb-4'>
+                    <div className='absolute inset-0 bg-red-500/20 rounded-full blur-xl animate-pulse'></div>
+                    <HiOutlineVideoCameraSlash className="relative w-16 h-16 text-slate-600 z-10" />
+                </div>
+                <p className="text-slate-500 font-medium tracking-widest text-sm">NO SIGNAL</p>
+                <p className="text-slate-600 text-xs mt-1">Check connection</p>
+            </div>
+        )}
         
         {/* Overlay Container */}
         <div className='absolute top-0 left-0 flex items-center gap-2 p-3 text-xs md:p-5 md:text-xl'>

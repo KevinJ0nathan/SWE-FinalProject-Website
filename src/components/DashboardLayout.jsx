@@ -49,7 +49,7 @@ const DashboardLayout = () => {
         <div className='grid grid-cols-1 lg:grid-cols-12 gap-6 pt-10 h-[calc(100vh-8rem)]'>
             {/*Video feed and stats*/}
             <div className='lg:col-span-8 h-full'>
-                <CameraFeed isConnected={true}></CameraFeed>
+                <CameraFeed isConnected={false}></CameraFeed>
                 <div className='flex gap-5 flex-wrap'>
                 <LightStatus lightStatus={lightState} humanPresence={humanDetected} isDarkEnvironment={isLowLight}></LightStatus>
                 <AIConfidence aiConfidenceLevel={aiConfidence}></AIConfidence>
