@@ -7,14 +7,14 @@ import {
 import client from '../mqttClient.js'
 
 const LightModeButton = () => {
-  const [activeMode, setActiveMode] = useState('AUTO');
+  const [activeMode, setActiveMode] = useState('auto');
 
   const handleModeChange = (newModeId) => {
     setActiveMode(newModeId);
 
     if (client && client.connected) {
       client.publish(
-        "config/mode",
+        "toggle_mode",
         newModeId,
         { qos: 1, retain: true }
       );
@@ -25,17 +25,17 @@ const LightModeButton = () => {
 
   const modes = [
     { 
-      id: 'AUTO', 
+      id: 'auto', 
       label: 'Auto', 
       icon: <HiOutlineLightningBolt className="w-5 h-5" />
     },
     { 
-      id: 'MANUAL_ON', 
+      id: 'manual_on', 
       label: 'Manual On', 
       icon: <HiOutlineSun className="w-5 h-5" />
     },
     { 
-      id: 'MANUAL_OFF', 
+      id: 'manual_off', 
       label: 'Manual Off', 
       icon: <HiOutlineBan className="w-5 h-5" />
     },
