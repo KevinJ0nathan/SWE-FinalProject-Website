@@ -25,14 +25,11 @@ const DashboardLayout = () => {
   useEffect(() => {
     client.on("message", (topic, message) => {
       const handleMessage = (topic, message) => {
-      if (topic === "light_state") {
-        setLightState(message.toString());
-      }
       if (topic === "telemetry") {
         try {
           const payload = JSON.parse(message.toString());
           
-          setAiConfidence(payload.ai_confidence);     
+          setLightState(payload.light_state);    
           setAmbientLight(payload.ambient_light);
           setHumanDetected(payload.human_present);    
           setIsLowLight(payload.environment_dark);    
@@ -76,7 +73,7 @@ const DashboardLayout = () => {
                 <div className='flex gap-5 flex-wrap'>
                 <LightStatus lightStatus={lightState} humanPresence={humanDetected} isDarkEnvironment={isLowLight}></LightStatus>
                 <AIConfidence aiConfidenceLevel={aiConfidence}></AIConfidence>
-                <AmbientLight Brightness={ambientLight}></AmbientLight>
+                <AmbientLight Brightness={100 - Math.floor(ambientLight/1024 * 100)}></AmbientLight>
                 </div>
             </div>
 
