@@ -11,7 +11,8 @@ function createClient() {
     client.on("connect", () => {
       console.log("MQTT Connected");
       client.subscribe("light_state");
-      client.subscribe("telemetry")
+      client.subscribe("telemetry");
+      client.subscribe("heartbeat")
     });
 
     client.on("error", (err) => console.log("MQTT Error:", err));

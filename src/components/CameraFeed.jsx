@@ -8,7 +8,7 @@ const CameraFeed = ({isConnected}) => {
         {isConnected ? (
             /* STATE A: Connected */
             <img 
-                src='https://placehold.co/1920x1080' 
+                src='http://localhost:8000/video_feed' 
                 alt="Live Feed"
                 className='w-full h-full object-cover'
             />

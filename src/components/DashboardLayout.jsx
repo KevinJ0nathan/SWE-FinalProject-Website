@@ -9,12 +9,19 @@ import AmbientLight from './AmbientLight'
 import client from '../mqttClient'
 
 const DashboardLayout = () => {
+
+  // web stats
   const[lightState, setLightState] = useState("OFF");
   const[aiConfidence, setAiConfidence] = useState(0);
   const[ambientLight, setAmbientLight] = useState(0);
   const [humanDetected, setHumanDetected] = useState(false);
   const [isLowLight, setIsLowLight] = useState(false);
 
+  // video streaming
+  const[hasVid, setHasVid] = useState(false)
+  const [lastHeartbeat, setLastHeartbeat] = useState(Date.now())
+
+  // use effect for mqtt message
   useEffect(() => {
     client.on("message", (topic, message) => {
       const handleMessage = (topic, message) => {
@@ -33,6 +40,10 @@ const DashboardLayout = () => {
           console.error("Failed to parse telemetry:", error);
         }
       }
+      if (topic === "heartbeat"){
+        setLastHeartbeat(Date.now());
+        setHasVid(true);
+      }
     }
 
     client.on("message", handleMessage);
@@ -44,12 +55,24 @@ const DashboardLayout = () => {
     });
   }, []);
 
+
+  // use effect for heartbeat check
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (Date.now() - lastHeartbeat > 5000) {
+        setHasVid(false);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [lastHeartbeat]);
+
   return (
     <div className='pt-20 pb-8 px-6 max-w-[1600px] mx-auto w-full'>
         <div className='grid grid-cols-1 lg:grid-cols-12 gap-6 pt-10 h-[calc(100vh-8rem)]'>
             {/*Video feed and stats*/}
             <div className='lg:col-span-8 h-full'>
-                <CameraFeed isConnected={false}></CameraFeed>
+                <CameraFeed isConnected={hasVid}></CameraFeed>
                 <div className='flex gap-5 flex-wrap'>
                 <LightStatus lightStatus={lightState} humanPresence={humanDetected} isDarkEnvironment={isLowLight}></LightStatus>
                 <AIConfidence aiConfidenceLevel={aiConfidence}></AIConfidence>
